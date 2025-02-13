@@ -1,0 +1,75 @@
+#include <stdio.h>
+
+// Function to calculate waiting time
+void calculateWaitingTime(int processes[], int n, int bt[], int wt[], int at[]) {
+    wt[0] = 0; // First process has no waiting time
+
+    for (int i = 1; i < n; i++) {
+        wt[i] = (bt[i - 1] + wt[i - 1]) - at[i]; 
+        if (wt[i] < 0) {
+            wt[i] = 0; // Ensuring no negative waiting time
+        }
+    }
+}
+
+// Function to calculate turnaround time
+void calculateTurnaroundTime(int processes[], int n, int bt[], int wt[], int tat[]) {
+    for (int i = 0; i < n; i++) {
+        tat[i] = bt[i] + wt[i];
+    }
+}
+
+// Function to calculate average time
+void findAvgTime(int processes[], int n, int bt[], int at[]) {
+    int wt[n], tat[n];
+    float total_wt = 0, total_tat = 0;
+
+    // Calculate waiting time
+    calculateWaitingTime(processes, n, bt, wt, at);
+
+    // Calculate turnaround time
+    calculateTurnaroundTime(processes, n, bt, wt, tat);
+
+    // Print process details
+    printf("\nProcesses\tArrival Time\tBurst Time\tWaiting Time\tTurnaround Time\n");
+    for (int i = 0; i < n; i++) {
+        total_wt += wt[i];
+        total_tat += tat[i];
+        printf("%d\t\t%d\t\t%d\t\t%d\t\t%d\n", processes[i], at[i], bt[i], wt[i], tat[i]);
+    }
+
+    printf("\nAverage Waiting Time = %.2f", total_wt / n);
+    printf("\nAverage Turnaround Time = %.2f\n", total_tat / n);
+}
+
+// Main function
+int main() {
+    int n;
+    
+    // Get the number of processes
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+
+    int processes[n], burst_time[n], arrival_time[n];
+
+    // Input process details
+    printf("Enter process IDs: ");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &processes[i]);
+    }
+
+    printf("Enter arrival times: ");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arrival_time[i]);
+    }
+
+    printf("Enter burst times: ");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &burst_time[i]);
+    }
+
+    // Calculate and display average time
+    findAvgTime(processes, n, burst_time, arrival_time);
+
+    return 0;
+}
